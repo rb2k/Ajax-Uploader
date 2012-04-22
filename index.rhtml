@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>Happy little uploader</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript" src="js/uploader.js"></script>
+  <script type="text/javascript">
+  var UID='';
+  // by setting the uid with javascript, the page will be cachable
+  // it also allows the user to upload one file after the other without reloading
+  function set_new_uid() {
+    UID='';
+    for(var i=0; i<32; i++){
+      UID += Math.floor(Math.random()*16).toString(16).toUpperCase();
+    }
+    $('#file-upload-form').get(0).setAttribute('action', '/upload?uid=' + UID);
+  }
+
+  $(document).ready(function() {
+    // set a new uid for every new file that gets selected
+    $('#file-input').change(function() {
+      set_new_uid(); 
+    });
+    // the execute our JS, we'll hook the submit for the form
+    $('#file-upload-form').submit(function() {
+      $('#progress').text('Upload is starting');
+      updateUploadProgress();
+    });
+  });
+  </script>
+</head>
+
+<body>
+  <h1>Can i haz file?</h1>
+  <form id="file-upload-form" action="" target="uploader" method="POST" enctype="multipart/form-data">
+    <p><label for="file-input">File:</label> <input id="file-input" type="file" name="file-input" /></p>
+    <p><label for="description">Description:</label></p>
+    <p><textarea id="description" name="description" rows="10" cols="50"></textarea></p>
+    <p><input type="submit" value="Save" /></p>
+  </form>
+  <div id="progress"></div>
+  <iframe id="uploader" name="uploader"></iframe>
+</body>
+</html>
